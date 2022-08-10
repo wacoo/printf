@@ -5,10 +5,11 @@
  * print_c - print first part
  * @i: interator
  * @c: character
+ * @vr: struct
  *
  * Return: iterator i
  */
-int print_c(int i, char c, var vr)
+int print_c(int i, char c, var *vr)
 {
 	if (c == 'c')
 	{
@@ -50,13 +51,13 @@ int print_c(int i, char c, var vr)
  * print_d - second part of printf
  * @i: iterator
  * @c: char
+ * @vr: struct
  *
  * Return: i iterator
  *
  */
 int print_d(int i, char c, var *vr)
 {
-	vr->count = 0;
 
 	if (c == 'x')
 	{
@@ -100,7 +101,8 @@ int print_d(int i, char c, var *vr)
 int _printf(const char *format, ...)
 {
 	int ln, i = 0;
-	var *vr;
+	var v;
+	var *vr = &v;
 
 	va_start(vr->ap, format);
 	ln = strlen(format);
@@ -108,8 +110,8 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%' && ln - 1 != i)
 		{
-			print_c(i, format[i], vr);
-			print_d(i, format[i], vr);
+			i = print_c(i, format[i + 1], vr);
+			i = print_d(i, format[i + 1], vr);
 		}
 		else
 		{
@@ -117,5 +119,5 @@ int _printf(const char *format, ...)
 		}
 		i++;
 	}
-	return (var->count);
+	return (vr->count);
 }
