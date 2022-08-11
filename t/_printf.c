@@ -10,16 +10,25 @@
  */
 int print_c(int i, char c, var *vr)
 {
+	char n[] = "(null)";
+	char *d = &n[0];
+
 	if (c == 'c')
 	{
 		vr->tmp = va_arg(vr->ap, int);
-		vr->count = print_chr(vr->tmp, vr->count);
+		if (vr->tmp != '\0')
+			vr->count = print_chr(vr->tmp, vr->count);
+		else
+			print_str(n, vr->count);
 		i++;
 	}
 	else if (c == 's')
 	{
 		vr->tmpa = va_arg(vr->ap, char *);
-		vr->count = print_str(vr->tmpa, vr->count);
+		 if (*(vr->tmpa) != '\0')
+			vr->count = print_str(vr->tmpa, vr->count);
+		 else
+			 print_str(d, vr->count);
 		i++;
 	}
 	else if (c == 'd' || c == 'i')
@@ -61,7 +70,7 @@ int print_d(int i, char c, var *vr)
 	if (c == 'x')
 	{
 		int in = va_arg(vr->ap, unsigned int);
-
+		
 		print_num(in, 16, 'x');
 		i++;
 	}
@@ -103,11 +112,16 @@ int _printf(const char *format, ...)
 	var v;
 	var *vr = &v;
 
+	vr->count = 0;
 	va_start(vr->ap, format);
 	ln = strlen(format);
 	while (i < ln)
 	{
-		if (format[i] == '%' && ln - 1 != i)
+		if (format == NULL)
+		{
+			return (vr-> count);
+		}
+		else if (format[i] == '%' && ln - 1 != i)
 		{
 			i = print_c(i, format[i + 1], vr);
 			i = print_d(i, format[i + 1], vr);
@@ -118,5 +132,6 @@ int _printf(const char *format, ...)
 		}
 		i++;
 	}
+	_putchar('\n');
 	return (vr->count);
 }
